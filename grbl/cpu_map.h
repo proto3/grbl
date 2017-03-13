@@ -39,7 +39,7 @@
   #define X_STEP_BIT      2  // Uno Digital Pin 2
   #define Y_STEP_BIT      3  // Uno Digital Pin 3
   #define Z_STEP_BIT      4  // Uno Digital Pin 4
-  #define A_STEP_BIT      4
+  #define A_STEP_BIT      1
   #define STEP_MASK       ((1<<X_STEP_BIT)|(1<<Y_STEP_BIT)|(1<<Z_STEP_BIT)) // All step bits
 
   // Define step direction output pins. NOTE: All direction pins must be on the same port.
@@ -48,7 +48,7 @@
   #define X_DIRECTION_BIT   5  // Uno Digital Pin 5
   #define Y_DIRECTION_BIT   6  // Uno Digital Pin 6
   #define Z_DIRECTION_BIT   7  // Uno Digital Pin 7
-  #define A_DIRECTION_BIT   3
+  #define A_DIRECTION_BIT   0
   #define DIRECTION_MASK    ((1<<X_DIRECTION_BIT)|(1<<Y_DIRECTION_BIT)|(1<<Z_DIRECTION_BIT)) // All direction bits
 
   // Define stepper driver enable/disable output pin.
@@ -97,10 +97,10 @@
   // Define flood and mist coolant enable output pins.
   #define COOLANT_FLOOD_DDR   DDRC
   #define COOLANT_FLOOD_PORT  PORTC
-  #define COOLANT_FLOOD_BIT   3  // Uno Analog Pin 3
+  #define COOLANT_FLOOD_BIT   5  // Uno Analog Pin 3
   #define COOLANT_MIST_DDR   DDRC
   #define COOLANT_MIST_PORT  PORTC
-  #define COOLANT_MIST_BIT   4  // Uno Analog Pin 4
+  #define COOLANT_MIST_BIT   5  // Uno Analog Pin 4
 
   // Define user-control controls (cycle start, reset, feed hold) input pins.
   // NOTE: All CONTROLs pins must be on the same port and not on a port with other input pins (limits).

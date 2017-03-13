@@ -312,12 +312,14 @@ ISR(TIMER1_COMPA_vect)
 
   // Set the direction pins a couple of nanoseconds before we step the steppers
   DIRECTION_PORT = (DIRECTION_PORT & ~DIRECTION_MASK) | (st.dir_outbits & DIRECTION_MASK);
+  PORTC = (PORTC & ~(1<<3)) | (st.dir_outbits & 1<<A_DIRECTION_BIT)<<3;
 
   // Then pulse the stepping pins
   #ifdef STEP_PULSE_DELAY
     st.step_bits = (STEP_PORT & ~STEP_MASK) | st.step_outbits; // Store out_bits to prevent overwriting.
   #else  // Normal operation
     STEP_PORT = (STEP_PORT & ~STEP_MASK) | st.step_outbits;
+    PORTC = (PORTC & ~(1<<4)) | (st.step_outbits & 1<<A_STEP_BIT)<<(4-A_STEP_BIT);
   #endif
 
   // Enable step pulse reset timer so that The Stepper Port Reset Interrupt can reset the signal after
@@ -463,6 +465,7 @@ ISR(TIMER0_OVF_vect)
 {
   // Reset stepping pins (leave the direction pins)
   STEP_PORT = (STEP_PORT & ~STEP_MASK) | (step_port_invert_mask & STEP_MASK);
+  PORTC = (PORTC & ~(1<<4)) | (step_port_invert_mask & 1<<A_STEP_BIT)<<(4-A_STEP_BIT);
   TCCR0B = 0; // Disable Timer0 to prevent re-entering this interrupt when it's not needed.
 }
 #ifdef STEP_PULSE_DELAY
@@ -512,7 +515,9 @@ void st_reset()
 
   // Initialize step and direction port pins.
   STEP_PORT = (STEP_PORT & ~STEP_MASK) | step_port_invert_mask;
+  PORTC = (PORTC & ~(1<<4)) | (step_port_invert_mask & 1<<A_STEP_BIT)<<(4-A_STEP_BIT);
   DIRECTION_PORT = (DIRECTION_PORT & ~DIRECTION_MASK) | dir_port_invert_mask;
+  PORTC = (PORTC & ~(1<<3)) | (dir_port_invert_mask & 1<<A_DIRECTION_BIT)<<(3-A_DIRECTION_BIT);
 }
 
 
@@ -521,6 +526,7 @@ void stepper_init()
 {
   // Configure step and direction interface pins
   STEP_DDR |= STEP_MASK;
+  DDRC |= 1<<4;
   STEPPERS_DISABLE_DDR |= 1<<STEPPERS_DISABLE_BIT;
   DIRECTION_DDR |= DIRECTION_MASK;
 
