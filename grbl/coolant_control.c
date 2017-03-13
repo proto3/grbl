@@ -74,20 +74,20 @@ void coolant_stop()
 }
 
 
-// Main program only. Immediately sets flood coolant running state and also mist coolant, 
+// Main program only. Immediately sets flood coolant running state and also mist coolant,
 // if enabled. Also sets a flag to report an update to a coolant state.
 // Called by coolant toggle override, parking restore, parking retract, sleep mode, g-code
 // parser program end, and g-code parser coolant_sync().
 void coolant_set_state(uint8_t mode)
 {
-  if (sys.abort) { return; } // Block during abort.  
-  
+  if (sys.abort) { return; } // Block during abort.
+
   if (mode == COOLANT_DISABLE) {
-  
-    coolant_stop(); 
-  
+
+    coolant_stop();
+
   } else {
-  
+
     if (mode & COOLANT_FLOOD_ENABLE) {
       #ifdef INVERT_COOLANT_FLOOD_PIN
         COOLANT_FLOOD_PORT &= ~(1 << COOLANT_FLOOD_BIT);
@@ -95,7 +95,7 @@ void coolant_set_state(uint8_t mode)
         COOLANT_FLOOD_PORT |= (1 << COOLANT_FLOOD_BIT);
       #endif
     }
-  
+
     #ifdef ENABLE_M7
       if (mode & COOLANT_MIST_ENABLE) {
         #ifdef INVERT_COOLANT_MIST_PIN
@@ -105,13 +105,13 @@ void coolant_set_state(uint8_t mode)
         #endif
       }
     #endif
-  
+
   }
   sys.report_ovr_counter = 0; // Set to report change immediately
 }
 
 
-// G-code parser entry-point for setting coolant state. Forces a planner buffer sync and bails 
+// G-code parser entry-point for setting coolant state. Forces a planner buffer sync and bails
 // if an abort or check-mode is active.
 void coolant_sync(uint8_t mode)
 {

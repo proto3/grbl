@@ -89,7 +89,7 @@ uint8_t limits_get_state()
 // If a switch is triggered at all, something bad has happened and treat it as such, regardless
 // if a limit switch is being disengaged. It's impossible to reliably tell the state of a
 // bouncing pin because the Arduino microcontroller does not retain any state information when
-// detecting a pin change. If we poll the pins in the ISR, you can miss the correct reading if the 
+// detecting a pin change. If we poll the pins in the ISR, you can miss the correct reading if the
 // switch is bouncing.
 // NOTE: Do not attach an e-stop to the limit pins, because this interrupt is disabled during
 // homing cycles and will not respond correctly. Upon user request or need, there may be a
@@ -119,19 +119,19 @@ uint8_t limits_get_state()
     }
   }
 #else // OPTIONAL: Software debounce limit pin routine.
-  // Upon limit pin change, enable watchdog timer to create a short delay. 
+  // Upon limit pin change, enable watchdog timer to create a short delay.
   ISR(LIMIT_INT_vect) { if (!(WDTCSR & (1<<WDIE))) { WDTCSR |= (1<<WDIE); } }
   ISR(WDT_vect) // Watchdog timer ISR
   {
-    WDTCSR &= ~(1<<WDIE); // Disable watchdog timer. 
-    if (sys.state != STATE_ALARM) {  // Ignore if already in alarm state. 
+    WDTCSR &= ~(1<<WDIE); // Disable watchdog timer.
+    if (sys.state != STATE_ALARM) {  // Ignore if already in alarm state.
       if (!(sys_rt_exec_alarm)) {
-        // Check limit pin state. 
+        // Check limit pin state.
         if (limits_get_state()) {
           mc_reset(); // Initiate system kill.
           system_set_exec_alarm(EXEC_ALARM_HARD_LIMIT); // Indicate hard limit critical event
         }
-      }  
+      }
     }
   }
 #endif

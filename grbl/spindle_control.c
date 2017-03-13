@@ -60,7 +60,7 @@ uint8_t spindle_get_state()
 {
 	#ifdef VARIABLE_SPINDLE
     #ifdef USE_SPINDLE_DIR_AS_ENABLE_PIN
-		  // No spindle direction output pin. 
+		  // No spindle direction output pin.
 			#ifdef INVERT_SPINDLE_ENABLE_PIN
 			  if (bit_isfalse(SPINDLE_ENABLE_PORT,(1<<SPINDLE_ENABLE_BIT))) { return(SPINDLE_STATE_CW); }
 	    #else
@@ -74,7 +74,7 @@ uint8_t spindle_get_state()
     #endif
 	#else
 		#ifdef INVERT_SPINDLE_ENABLE_PIN
-		  if (bit_isfalse(SPINDLE_ENABLE_PORT,(1<<SPINDLE_ENABLE_BIT))) { 
+		  if (bit_isfalse(SPINDLE_ENABLE_PORT,(1<<SPINDLE_ENABLE_BIT))) {
 		#else
 		  if (bit_istrue(SPINDLE_ENABLE_PORT,(1<<SPINDLE_ENABLE_BIT))) {
 		#endif
@@ -155,7 +155,7 @@ void spindle_stop()
         sys.spindle_speed = settings.rpm_min;
         pwm_value = SPINDLE_PWM_MIN_VALUE;
       }
-    } else { 
+    } else {
       // Compute intermediate PWM value with linear spindle speed model.
       // NOTE: A nonlinear model could be installed here, if required, but keep it VERY light-weight.
       sys.spindle_speed = rpm;
@@ -177,14 +177,14 @@ void spindle_stop()
 {
   if (sys.abort) { return; } // Block during abort.
   if (state == SPINDLE_DISABLE) { // Halt or set spindle direction and rpm.
-  
+
     #ifdef VARIABLE_SPINDLE
       sys.spindle_speed = 0.0;
     #endif
     spindle_stop();
-  
+
   } else {
-  
+
     #ifndef USE_SPINDLE_DIR_AS_ENABLE_PIN
       if (state == SPINDLE_ENABLE_CW) {
         SPINDLE_DIRECTION_PORT &= ~(1<<SPINDLE_DIRECTION_BIT);
@@ -192,10 +192,10 @@ void spindle_stop()
         SPINDLE_DIRECTION_PORT |= (1<<SPINDLE_DIRECTION_BIT);
       }
     #endif
-  
+
     #ifdef VARIABLE_SPINDLE
       // NOTE: Assumes all calls to this function is when Grbl is not moving or must remain off.
-      if (settings.flags & BITFLAG_LASER_MODE) { 
+      if (settings.flags & BITFLAG_LASER_MODE) {
         if (state == SPINDLE_ENABLE_CCW) { rpm = 0.0; } // TODO: May need to be rpm_min*(100/MAX_SPINDLE_SPEED_OVERRIDE);
       }
       spindle_set_speed(spindle_compute_pwm_value(rpm));
@@ -208,16 +208,16 @@ void spindle_stop()
         SPINDLE_ENABLE_PORT &= ~(1<<SPINDLE_ENABLE_BIT);
       #else
         SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);
-      #endif    
+      #endif
     #endif
-  
+
   }
-  
+
   sys.report_ovr_counter = 0; // Set to report change immediately
 }
 
 
-// G-code parser entry-point for setting spindle state. Forces a planner buffer sync and bails 
+// G-code parser entry-point for setting spindle state. Forces a planner buffer sync and bails
 // if an abort or check-mode is active.
 #ifdef VARIABLE_SPINDLE
   void spindle_sync(uint8_t state, float rpm)
