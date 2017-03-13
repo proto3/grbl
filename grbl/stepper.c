@@ -97,7 +97,8 @@ typedef struct {
   // Used by the bresenham line algorithm
   uint32_t counter_x,        // Counter variables for the bresenham line tracer
            counter_y,
-           counter_z;
+           counter_z,
+           counter_a;
   #ifdef STEP_PULSE_DELAY
     uint8_t step_bits;  // Stores out_bits output to complete the step pulse delay
   #endif
@@ -359,6 +360,7 @@ ISR(TIMER1_COMPA_vect)
         st.steps[X_AXIS] = st.exec_block->steps[X_AXIS] >> st.exec_segment->amass_level;
         st.steps[Y_AXIS] = st.exec_block->steps[Y_AXIS] >> st.exec_segment->amass_level;
         st.steps[Z_AXIS] = st.exec_block->steps[Z_AXIS] >> st.exec_segment->amass_level;
+        st.steps[A_AXIS] = st.exec_block->steps[A_AXIS] >> st.exec_segment->amass_level;
       #endif
 
       #ifdef VARIABLE_SPINDLE
@@ -418,6 +420,17 @@ ISR(TIMER1_COMPA_vect)
     st.counter_z -= st.exec_block->step_event_count;
     if (st.exec_block->direction_bits & (1<<Z_DIRECTION_BIT)) { sys_position[Z_AXIS]--; }
     else { sys_position[Z_AXIS]++; }
+  }
+  #ifdef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
+    st.counter_a += st.steps[A_AXIS];
+  #else
+    st.counter_a += st.exec_block->steps[A_AXIS];
+  #endif
+  if (st.counter_a > st.exec_block->step_event_count) {
+    st.step_outbits |= (1<<A_STEP_BIT);
+    st.counter_a -= st.exec_block->step_event_count;
+    if (st.exec_block->direction_bits & (1<<A_DIRECTION_BIT)) { sys_position[A_AXIS]--; }
+    else { sys_position[A_AXIS]++; }
   }
 
   // During a homing cycle, lock out and prevent desired axes from moving.
