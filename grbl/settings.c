@@ -66,7 +66,7 @@ void write_global_settings()
 
 // Method to restore EEPROM-saved Grbl global settings back to defaults.
 void settings_restore(uint8_t restore_flag) {
-  if (restore_flag & SETTINGS_RESTORE_DEFAULTS) {
+  // if (restore_flag & SETTINGS_RESTORE_DEFAULTS) {
     settings.pulse_microseconds = DEFAULT_STEP_PULSE_MICROSECONDS;
     settings.stepper_idle_lock_time = DEFAULT_STEPPER_IDLE_LOCK_TIME;
     settings.step_invert_mask = DEFAULT_STEPPING_INVERT_MASK;
@@ -111,31 +111,31 @@ void settings_restore(uint8_t restore_flag) {
     settings.max_travel[Z_AXIS] = (-DEFAULT_Z_MAX_TRAVEL);
     settings.max_travel[A_AXIS] = (-DEFAULT_A_MAX_TRAVEL);
 
-    write_global_settings();
-  }
-
-  if (restore_flag & SETTINGS_RESTORE_PARAMETERS) {
-    uint8_t idx;
-    float coord_data[N_AXIS];
-    memset(&coord_data, 0, sizeof(coord_data));
-    for (idx=0; idx <= SETTING_INDEX_NCOORD; idx++) { settings_write_coord_data(idx, coord_data); }
-  }
-
-  if (restore_flag & SETTINGS_RESTORE_STARTUP_LINES) {
-    #if N_STARTUP_LINE > 0
-      eeprom_put_char(EEPROM_ADDR_STARTUP_BLOCK, 0);
-      eeprom_put_char(EEPROM_ADDR_STARTUP_BLOCK+1, 0); // Checksum
-    #endif
-    #if N_STARTUP_LINE > 1
-      eeprom_put_char(EEPROM_ADDR_STARTUP_BLOCK+(LINE_BUFFER_SIZE+1), 0);
-      eeprom_put_char(EEPROM_ADDR_STARTUP_BLOCK+(LINE_BUFFER_SIZE+2), 0); // Checksum
-    #endif
-  }
-
-  if (restore_flag & SETTINGS_RESTORE_BUILD_INFO) {
-    eeprom_put_char(EEPROM_ADDR_BUILD_INFO , 0);
-    eeprom_put_char(EEPROM_ADDR_BUILD_INFO+1 , 0); // Checksum
-  }
+    // write_global_settings();
+  // }
+  //
+  // if (restore_flag & SETTINGS_RESTORE_PARAMETERS) {
+  //   uint8_t idx;
+  //   float coord_data[N_AXIS];
+  //   memset(&coord_data, 0, sizeof(coord_data));
+  //   for (idx=0; idx <= SETTING_INDEX_NCOORD; idx++) { settings_write_coord_data(idx, coord_data); }
+  // }
+  //
+  // if (restore_flag & SETTINGS_RESTORE_STARTUP_LINES) {
+  //   #if N_STARTUP_LINE > 0
+  //     eeprom_put_char(EEPROM_ADDR_STARTUP_BLOCK, 0);
+  //     eeprom_put_char(EEPROM_ADDR_STARTUP_BLOCK+1, 0); // Checksum
+  //   #endif
+  //   #if N_STARTUP_LINE > 1
+  //     eeprom_put_char(EEPROM_ADDR_STARTUP_BLOCK+(LINE_BUFFER_SIZE+1), 0);
+  //     eeprom_put_char(EEPROM_ADDR_STARTUP_BLOCK+(LINE_BUFFER_SIZE+2), 0); // Checksum
+  //   #endif
+  // }
+  //
+  // if (restore_flag & SETTINGS_RESTORE_BUILD_INFO) {
+  //   eeprom_put_char(EEPROM_ADDR_BUILD_INFO , 0);
+  //   eeprom_put_char(EEPROM_ADDR_BUILD_INFO+1 , 0); // Checksum
+  // }
 }
 
 
@@ -312,11 +312,11 @@ uint8_t settings_store_global_setting(uint8_t parameter, float value) {
 
 // Initialize the config subsystem
 void settings_init() {
-  if(!read_global_settings()) {
-    report_status_message(STATUS_SETTING_READ_FAIL);
+  // if(!read_global_settings()) {
+  //   report_status_message(STATUS_SETTING_READ_FAIL);
     settings_restore(SETTINGS_RESTORE_ALL); // Force restore all EEPROM data.
-    report_grbl_settings();
-  }
+  //   report_grbl_settings();
+  // }
 }
 
 
