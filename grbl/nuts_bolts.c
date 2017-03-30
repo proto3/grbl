@@ -164,13 +164,12 @@ float hypot_f(float x, float y) { return(sqrt(x*x + y*y)); }
 float convert_delta_vector_to_unit_vector(float *vector)
 {
   uint8_t idx;
-  float magnitude = 0.0;
-  for (idx=0; idx<N_AXIS; idx++) {
-    if (vector[idx] != 0.0) {
-      magnitude += vector[idx]*vector[idx];
-    }
-  }
+  float magnitude_a = vector[X_AXIS]*vector[X_AXIS] + vector[Y_AXIS]*vector[Y_AXIS];
+  float magnitude_b = vector[Z_AXIS]*vector[Z_AXIS] + vector[A_AXIS]*vector[A_AXIS];
+
+  float magnitude = max(magnitude_a, magnitude_b);
   magnitude = sqrt(magnitude);
+
   float inv_magnitude = 1.0/magnitude;
   for (idx=0; idx<N_AXIS; idx++) { vector[idx] *= inv_magnitude; }
   return(magnitude);
